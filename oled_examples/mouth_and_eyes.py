@@ -8,7 +8,7 @@ from queue import Queue
 # Añadir el directorio padre al sys.path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from oled_face import OledFaceController  # Importa la clase OledFaceController desde tu módulo o archivo
+from oled_controller import OledFaceController  # Importa la clase OledFaceController desde tu módulo o archivo
 
 def main():
     oled = OledFaceController()
