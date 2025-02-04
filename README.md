@@ -99,21 +99,21 @@ Below is a non-exhaustive list of Python libraries commonly used in this project
 ## Installation & Setup
 
 1. **Clone the repository**:
-   ```bash
+   ```bash 
    git clone https://github.com/Guilleloma/K-VRC.git
    cd K-VRC
-Install Python dependencies:
-
-bash
-Copy
-Edit
-pip3 install -r requirements.txt
+2. **Install Python dependencies**:
+```bash
+   pip3 install -r requirements.txt
+```
 (Adjust the command if you use a virtual environment or a different Python version.)
 
-Enable I2C, Camera, and Audio on your Raspberry Pi:
-
+3.**Enable I2C, Camera, and Audio on your Raspberry Pi**:
+```bash
 Run sudo raspi-config
+```
 Go to Interface Options and enable I2C and Camera.
+
 For the WM8960 Audio HAT, follow the vendor instructions (often involves installing kernel modules or editing /boot/config.txt).
 Wire up the Hardware:
 
@@ -122,7 +122,6 @@ Connect the OLED’s SDA and SCL to the Pi’s SDA/SCL I2C pins, and power lines
 Attach the Audio HAT to the Pi Zero’s GPIO header.
 Ensure the camera connector is attached properly (CSI interface).
 Test Each Component:
-
 Servo: Run a simple PWM test script to move the servo.
 OLED: Print “Hello World” to the display.
 Audio: Play a sample WAV/MP3 and confirm audio output.
@@ -131,10 +130,9 @@ Camera: Use raspistill or similar commands to capture a test image.
 ## Usage
 Once everything is set up, power on the Raspberry Pi Zero 2W and navigate to the project directory. You can run the main Python script (for example, main.py) using:
 
-bash
-Copy
-Edit
+```bash
 python3 main.py
+```
 Depending on how you structure your code, this script might do any of the following:
 
 Initialize servo movement (like K-VRC “waking up”).
@@ -142,8 +140,6 @@ Display an animated or static image on the OLED screen.
 Start audio feedback or voice-based interactions.
 Initialize camera functions (e.g., object detection, streaming, etc.).
 Check the console or the OLED for status messages. Detailed logs may be stored in a dedicated logs/ folder or printed to the terminal.
-
-
 
 ## License
 This project is distributed under the MIT License. For more details, see the LICENSE file in the repository.
@@ -157,4 +153,4 @@ For any questions, suggestions, or troubleshooting, feel free to open an Issue o
 Enjoy bringing K-VRC to life!
 Feel free to reach out via the GitHub Issues page if you encounter any challenges or want to share updates on your build.
 
-Happy building and hacking!
+Happy building and hacking!🤖
