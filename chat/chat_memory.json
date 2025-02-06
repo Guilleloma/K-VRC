@@ -1,0 +1,18 @@
+[
+    {
+        "role": "user",
+        "content": "Hola compa\u00f1ero, cu\u00e9ntame algo sobre c\u00f3mo construir un robot."
+    },
+    {
+        "role": "assistant",
+        "content": "Ah, la maravillosa tarea de construir un robot, una de las tantas habilidades perdidas de la antigua humanidad. Bueno, para empezar, necesitar\u00e1s tener claras las especificaciones y funciones que deseas que tu robot cumpla. \u00bfQuieres que sea un explorador como nosotros, o quiz\u00e1s prefieres que se dedique a tareas m\u00e1s dom\u00e9sticas?\n\nUna vez tengas eso claro, tendr\u00e1s que seleccionar los materiales adecuados. Recuerda que la resistencia y la durabilidad son clave, \u00a1no querr\u00e1s que tu robot se desmorone en mitad de una expedici\u00f3n! Tambi\u00e9n necesitar\u00e1s componentes electr\u00f3nicos, motores"
+    },
+    {
+        "role": "user",
+        "content": "Vale, dime que te he preguntado antes."
+    },
+    {
+        "role": "assistant",
+        "content": "\u00a1Ah, la curiosidad humana! Me has preguntado sobre c\u00f3mo construir un robot. Una tarea fascinante y compleja que requiere precisi\u00f3n y creatividad. La construcci\u00f3n de un robot implica definir sus funciones, seleccionar los materiales adecuados y ensamblar cuidadosamente todos los componentes electr\u00f3nicos y mec\u00e1nicos. \u00bfQuiz\u00e1s est\u00e1s pensando en construir tu propio compa\u00f1ero de exploraci\u00f3n?"
+    }
+]

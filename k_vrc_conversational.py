@@ -1,10 +1,27 @@
+import os
 import time
-from chat.chat_manager import get_chat_response
+from chat.chat_manager import get_chat_response, load_memory, save_memory  # Importamos memoria
 from oled_controller import OledFaceController
 from tts.tts_openai import OpenAITTS
 from stt.stt_main import transcribe_audio  # Ahora solo importamos la transcripción
 
+# Ruta corregida para la memoria
+CHAT_MEMORY_DIR = "chat"
+MEMORY_FILE = os.path.join(CHAT_MEMORY_DIR, "chat_memory.json")
+
+def reset_memory():
+    """Borra el archivo JSON al inicio del programa para reiniciar la memoria."""
+    if os.path.exists(MEMORY_FILE):
+        os.remove(MEMORY_FILE)
+        print("🔄 Memoria borrada al iniciar K-VRC.")
+
 def main():
+    # 🔹 Reiniciamos la memoria SOLO al iniciar K-VRC
+    reset_memory()
+    
+    # 🔹 Cargamos la memoria después de haberla reiniciado
+    chat_history = load_memory()
+
     face_controller = OledFaceController()
     face_controller.start_eyes_animation(interval_open=3.0, interval_blink=0.1)
 
