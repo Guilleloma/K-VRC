@@ -31,10 +31,10 @@ def main():
     # Instanciamos nuestro TTS (aunque aquí no lo estamos usando)
     tts_client = OpenAITTS()  # Usa la API_KEY de la variable de entorno
 
-    # 🔹 Instanciamos y activamos el efecto neón del LED
+    # 🔹 Instanciamos y activamos el efecto FIRE del LED al iniciar el programa
     led = LEDController(pin=27)  # Asegúrate de que el pin es el correcto
-    print("🔆 Iniciando efecto neón del LED...")
-    led.blink_neon_effect(duration=10)  # El efecto dura 10 segundos al inicio
+    print("🔥 Iniciando efecto FIRE del LED...")
+    led.fire_effect(duration=2)  # El efecto dura 10 segundos al inicio
 
     print("=== K-VRC Conversational ===")
     print("Presiona Ctrl+C para salir.\n")
@@ -79,7 +79,7 @@ def main():
     except KeyboardInterrupt:
         print("🛑 Interrumpido por el usuario. Saliendo...")
     finally:
-        print("🔆 Desactivando efecto neón y apagando LED...")
+        print("🔆 Desactivando efecto y apagando LED...")
         led.blink_neon_effect(duration=2)  # Pequeño efecto antes de apagar
         led.turn_off()
         led.cleanup()

@@ -1,4 +1,37 @@
-import RPi.GPIO as GPIO 
+from utils import is_raspberry_pi
+
+if is_raspberry_pi():
+    import RPi.GPIO as GPIO
+else:
+    print("No se detecta Raspberry Pi: usando controlador GPIO simulado.")
+    class DummyGPIO:
+        BCM = "BCM"
+        OUT = "OUT"
+        
+        def setmode(self, mode):
+            print(f"DummyGPIO: setmode({mode})")
+            
+        def setup(self, pin, mode):
+            print(f"DummyGPIO: setup(pin={pin}, mode={mode})")
+            
+        def PWM(self, pin, frequency):
+            print(f"DummyGPIO: creando PWM en el pin {pin} con frecuencia {frequency}Hz")
+            class DummyPWM:
+                def start(self, duty_cycle):
+                    print(f"DummyPWM: iniciando con duty_cycle={duty_cycle}%")
+                    
+                def ChangeDutyCycle(self, duty_cycle):
+                    print(f"DummyPWM: cambiando duty_cycle a {duty_cycle}%")
+                    
+                def stop(self):
+                    print("DummyPWM: deteniendo PWM")
+            return DummyPWM()
+        
+        def cleanup(self):
+            print("DummyGPIO: limpiando configuración GPIO")
+    
+    GPIO = DummyGPIO()
+
 import time
 import random
 
@@ -7,8 +40,8 @@ class LEDController:
         self.pin = pin
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.pin, GPIO.OUT)
-        self.pwm = GPIO.PWM(self.pin, 100)  # Configure PWM at 100Hz
-        self.pwm.start(0)  # Start PWM with duty cycle 0%
+        self.pwm = GPIO.PWM(self.pin, 100)  # Configura el PWM a 100Hz
+        self.pwm.start(0)  # Inicia el PWM con ciclo de trabajo 0%
 
     def cleanup(self):
         self.pwm.stop()
@@ -16,45 +49,43 @@ class LEDController:
 
     def turn_on(self):
         """
-        Turns the LED fully on by setting PWM duty cycle to 100%.
+        Enciende el LED al 100% ajustando el ciclo del PWM.
         """
         self.pwm.ChangeDutyCycle(100)
-        print("LED turned ON at 100% brightness.")
+        print("LED encendido al 100% de brillo.")
 
     def turn_off(self):
         """
-        Turns the LED fully off by setting PWM duty cycle to 0%.
+        Apaga el LED ajustando el ciclo del PWM a 0%.
         """
         self.pwm.ChangeDutyCycle(0)
-        print("LED turned OFF.")
+        print("LED apagado.")
 
     def dim(self, duty_cycle=10):
         """
-        Dims the LED by setting PWM duty cycle to a low value.
+        Atenúa el LED configurando un ciclo de trabajo bajo.
         
-        :param duty_cycle: The duty cycle percentage for dimming (default is 10%).
+        :param duty_cycle: Porcentaje del ciclo de trabajo para atenuar (por defecto es 10%).
         """
         self.pwm.ChangeDutyCycle(duty_cycle)
-        print(f"LED dimmed to {duty_cycle}% brightness.")
+        print(f"LED atenuado a {duty_cycle}% de brillo.")
 
     def blink_neon_effect(self, duration):
         """
-        Creates a flickering neon effect by keeping the LED on for longer periods
-        with brief dim flickers.
+        Crea un efecto de parpadeo similar a un neón al encender el LED por largos periodos
+        con breves parpadeos de atenuación.
         
-        :param duration: Total time in seconds for the effect to run.
+        :param duration: Tiempo total en segundos que durará el efecto.
         """
         start_time = time.time()
         while time.time() - start_time < duration:
-            # Longer on-time between 0.5 to 1.5 seconds
             on_time = random.uniform(0.5, 1)
-            # Short flicker dim-time between 0.05 to 0.2 seconds
             flicker_time = random.uniform(0.05, 0.5)
             
             self.turn_on()
             time.sleep(on_time)
             
-            self.dim(10)  # Dim the LED briefly
+            self.dim(10)  # Atenúa brevemente el LED
             time.sleep(flicker_time)
         
     def blink(self, on_time, off_time, repeat):
@@ -67,10 +98,10 @@ class LEDController:
     def fade(self, duration):
         start_time = time.time()
         while time.time() - start_time < duration:
-            for duty_cycle in range(0, 101, 5):  # Increase brightness
+            for duty_cycle in range(0, 101, 5):  # Incrementa el brillo
                 self.pwm.ChangeDutyCycle(duty_cycle)
                 time.sleep(0.05)
-            for duty_cycle in range(100, -1, -5):  # Decrease brightness
+            for duty_cycle in range(100, -1, -5):  # Decrementa el brillo
                 self.pwm.ChangeDutyCycle(duty_cycle)
                 time.sleep(0.05)
 
@@ -81,16 +112,16 @@ class LEDController:
             self.pwm.ChangeDutyCycle(intensity)
             time.sleep(random.uniform(0.05, 0.2))
 
-# Example usage
+# Ejemplo de uso
 if __name__ == "__main__":
-    led_pin = 27  # Example GPIO pin
+    led_pin = 27  # Pin GPIO
     led = LEDController(led_pin)
     
     try:
-        print("Starting neon effect...")
-        led.blink_neon_effect(duration=30)  # Run the effect for 30 seconds
+        print("Iniciando efecto FIRE...")
+        led.fire_effect(duration=10)  # Efecto de 10 segundos
     except KeyboardInterrupt:
-        print("Effect interrupted by user.")
+        print("Efecto interrumpido por el usuario.")
     finally:
         led.cleanup()
-        print("LED cleanup done.")
+        print("Limpieza de LED finalizada.")
