@@ -1,15 +1,50 @@
 import os
 import random
 from PIL import Image
-import Adafruit_SSD1306
 import time
 import threading
 from queue import Queue
 
+# Importamos la función de detección desde utils.py
+from utils import is_raspberry_pi
+
+# Según la plataforma, definimos la clase de pantalla OLED
+if is_raspberry_pi():
+    # En Raspberry Pi, usamos la librería real
+    import Adafruit_SSD1306
+    OLED_CLASS = Adafruit_SSD1306.SSD1306_128_64
+else:
+    # En PC/Mac, definimos una clase dummy para simular el OLED
+    class DummyOLED:
+        def __init__(self, *args, **kwargs):
+            print("[DummyOLED] Inicialización simulada del OLED.")
+
+        def begin(self):
+            print("[DummyOLED] begin() simulada.")
+
+        def clear(self):
+            print("[DummyOLED] clear() simulada.")
+
+        def display(self):
+            print("[DummyOLED] display() simulada.")
+
+        def image(self, img):
+            print("[DummyOLED] image() llamada.")
+
+        @property
+        def width(self):
+            return 128
+
+        @property
+        def height(self):
+            return 64
+
+    OLED_CLASS = DummyOLED
+
 class OledFaceController:
     def __init__(self):
-        # Inicializar la pantalla OLED
-        self.disp = Adafruit_SSD1306.SSD1306_128_64(rst=None)
+        # Inicializar la pantalla OLED usando la clase seleccionada
+        self.disp = OLED_CLASS(rst=None)
         self.disp.begin()
         self.disp.clear()
         self.disp.display()
@@ -75,7 +110,7 @@ class OledFaceController:
         Bucle infinito que parpadea: varios estados en secuencia.
         Se detiene cuando self.eyes_running = False.
         """
-        eye_sequence = ['half_open', 'half_closed', 'closed', 'half_closed', 'half_open','open']
+        eye_sequence = ['half_open', 'half_closed', 'closed', 'half_closed', 'half_open', 'open']
 
         while self.eyes_running:
             # Escogemos un tiempo random que los ojos estarán "abiertos" antes de parpadear
@@ -91,14 +126,12 @@ class OledFaceController:
                 time.sleep(interval_blink)
 
             # Esperar un rato (ojos abiertos) antes del siguiente parpadeo
-            # Rompemos también si se desactiva el flag en medio
             elapsed = 0
             while elapsed < open_interval and self.eyes_running:
                 time.sleep(0.1)
                 elapsed += 0.1
 
-        # Cuando salimos del bucle, dejamos una imagen final si queremos
-        # Ojos abiertos y boca cerrada
+        # Imagen final: ojos abiertos y boca cerrada
         final_eye = self.eye_images['open']
         final_mouth = self.mouth_images['closed']
         self.image_queue.put((final_eye, final_mouth))
@@ -133,14 +166,11 @@ class OledFaceController:
         Se detiene cuando self.mouth_running = False.
         """
         while self.mouth_running:
-            # Escoge un frame aleatorio de boca
             mouth_image = self.mouth_images[random.choice(list(self.mouth_images.keys()))]
-            # Durante el habla, puedes mantener ojos 'open' o hacerlos parpadear, a gusto
             eye_image = self.eye_images['open']
             self.image_queue.put((eye_image, mouth_image))
             time.sleep(interval_mouth)
 
-        # Al terminar, si quieres, dejas los ojos abiertos y boca cerrada
         final_eye = self.eye_images['open']
         final_mouth = self.mouth_images['closed']
         self.image_queue.put((final_eye, final_mouth))
