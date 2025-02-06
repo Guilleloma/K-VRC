@@ -1,5 +1,7 @@
 # K-VRC Raspberry Pi Project
 
+![Cheeky_kvrc](https://github.com/user-attachments/assets/78056914-b316-40cc-9b1a-54c4a7994b1d)
+
 ## Table of Contents
 1. [Overview](#overview)  
 2. [Features](#features)  
