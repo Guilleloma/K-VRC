@@ -5,6 +5,8 @@ from oled_controller import OledFaceController
 from tts.tts_openai import OpenAITTS
 from stt.stt_main import transcribe_audio  # Ahora solo importamos la transcripción
 from sts.sts_speech import sts_speech
+from led_controller import LEDController  # Importamos el controlador del LED
+
 
 # Ruta corregida para la memoria
 CHAT_MEMORY_DIR = "chat"
@@ -28,6 +30,11 @@ def main():
 
     # Instanciamos nuestro TTS (aunque aquí no lo estamos usando)
     tts_client = OpenAITTS()  # Usa la API_KEY de la variable de entorno
+
+    # 🔹 Instanciamos y activamos el efecto neón del LED
+    led = LEDController(pin=27)  # Asegúrate de que el pin es el correcto
+    print("🔆 Iniciando efecto neón del LED...")
+    led.blink_neon_effect(duration=10)  # El efecto dura 10 segundos al inicio
 
     print("=== K-VRC Conversational ===")
     print("Presiona Ctrl+C para salir.\n")
@@ -72,6 +79,12 @@ def main():
     except KeyboardInterrupt:
         print("🛑 Interrumpido por el usuario. Saliendo...")
     finally:
+        print("🔆 Desactivando efecto neón y apagando LED...")
+        led.blink_neon_effect(duration=2)  # Pequeño efecto antes de apagar
+        led.turn_off()
+        led.cleanup()
+       
+        # 🔹 Detener animaciones antes de salir
         face_controller.stop_eyes_animation()
         face_controller.stop_mouth_animation()
         face_controller.cleanup()
