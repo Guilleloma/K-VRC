@@ -4,6 +4,7 @@ from chat.chat_manager import get_chat_response, load_memory, save_memory  # Imp
 from oled_controller import OledFaceController
 from tts.tts_openai import OpenAITTS
 from stt.stt_main import transcribe_audio  # Ahora solo importamos la transcripción
+from sts.sts_speech import sts_speech
 
 # Ruta corregida para la memoria
 CHAT_MEMORY_DIR = "chat"
@@ -25,7 +26,7 @@ def main():
     face_controller = OledFaceController()
     face_controller.start_eyes_animation(interval_open=3.0, interval_blink=0.1)
 
-    # Instanciamos nuestro TTS
+    # Instanciamos nuestro TTS (aunque aquí no lo estamos usando)
     tts_client = OpenAITTS()  # Usa la API_KEY de la variable de entorno
 
     print("=== K-VRC Conversational ===")
@@ -57,10 +58,12 @@ def main():
             face_controller.stop_eyes_animation()
             face_controller.start_mouth_animation(interval_mouth=0.2)
 
-            # 5) Llamar a TTS
+            # 5) Llamar a STS (Speech-to-Speech) en tiempo real
+            #sts_speech(chat_response)
+            # Si prefieres usar TTS tradicional, descomenta la siguiente línea y comenta la línea de STS:
             tts_client.texto_a_voz_streaming(chat_response, output_file="output.mp3")
 
-            # 6) Parar boca y volver a ojos
+            # 6) Parar boca y volver a encender los ojos
             face_controller.stop_mouth_animation()
             face_controller.start_eyes_animation()
 

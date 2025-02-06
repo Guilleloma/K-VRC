@@ -10,7 +10,7 @@ class RealTimeAudioCapture:
                  rate=16000,
                  chunk=1024,
                  silence_threshold=20,  # Ajustar según tus pruebas mirar el stt_main.py para ver el valor
-                 silence_duration=4.0,  # Ajustar según tus pruebas mirar el stt_main.py para ver el valor
+                 silence_duration=2.0,  # Ajustar según tus pruebas mirar el stt_main.py para ver el valor
                  output_path="temp_audio.wav"):
         """
         :param channels: 1 = mono, 2 = stereo, etc.
