@@ -1,4 +1,4 @@
-# tts_openai.py
+# tts/tts_openai.py
 from openai import OpenAI
 import os
 from pydub import AudioSegment
@@ -25,8 +25,16 @@ class OpenAITTS:
         """
         Envía 'texto' a la API TTS de OpenAI, guarda la respuesta en 'output_file'
         y luego reproduce el archivo usando pydub.
+
+        Si 'output_file' es una ruta relativa, se guardará en la carpeta 'tts' junto a este archivo.
         """
-        print("[OpenAITTS] Iniciando TTS con streaming real-time...")
+        # Si el output_file no es una ruta absoluta, construirla en la carpeta del módulo
+        if not os.path.isabs(output_file):
+            base_dir = os.path.dirname(os.path.abspath(__file__))
+            output_file = os.path.join(base_dir, output_file)
+            output_file = os.path.abspath(output_file)
+        
+        print(f"[OpenAITTS] Iniciando TTS con streaming real-time...\nGuardando audio en: '{output_file}'")
         try:
             response = self.client.audio.speech.create(
                 model=model,
@@ -52,3 +60,7 @@ class OpenAITTS:
             print("[OpenAITTS] Reproducción de audio finalizada.")
         except Exception as e:
             print(f"[OpenAITTS] Error al reproducir '{audio_file}': {e}")
+
+if __name__ == "__main__":
+    # Prueba de generación TTS; aquí se guardará 'output.mp3' en la carpeta 'tts'
+    OpenAITTS().texto_a_voz_streaming("Hola, este es un ejemplo de TTS")

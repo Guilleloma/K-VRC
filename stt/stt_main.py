@@ -23,13 +23,20 @@ def transcribe_audio():
     """
     Captura el audio y lo transcribe solo si hay voz.
     """
+    # Forzar que la ruta de salida sea relativa al directorio de este módulo (stt)
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    default_output_path = os.path.join(base_dir, "temp_audio.wav")
+    default_output_path = os.path.abspath(default_output_path)  # aseguramos que sea una ruta absoluta
+
+    print(f"[DEBUG] Guardando audio temporal en: {default_output_path}")
+
     audio_capture = RealTimeAudioCapture(
         channels=1,
         rate=16000,
         chunk=1024,
         silence_threshold=12,
         silence_duration=2.0,
-        output_path="temp_audio.wav"
+        output_path=default_output_path
     )
 
     # Capturar audio

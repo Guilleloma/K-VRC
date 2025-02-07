@@ -6,6 +6,7 @@ from tts.tts_openai import OpenAITTS
 from stt.stt_main import transcribe_audio  # Ahora solo importamos la transcripción
 from sts.sts_speech import sts_speech
 from led_controller import LEDController  # Importamos el controlador del LED
+from vision.camera import capture_camera_image, analyze_image  # Funciones para capturar y analizar imagen
 
 
 # Ruta corregida para la memoria
@@ -54,6 +55,23 @@ def main():
             print("=== Transcripción ===")
             print(result_text)
             print("=====================\n")
+
+            # 2) Si se solicita describir lo que "ve" el robot, se captura una imagen de la cámara
+            if "lo que ves" in result_text.lower() or "qué ves" in result_text.lower():
+                try:
+                    print("🚀 Capturando imagen de la cámara para analizar lo que veo...")
+                    image_path = capture_camera_image()
+                    if image_path:
+                        analysis_result = analyze_image(image_path)
+                        response_text = "Esto es lo que veo: " + str(analysis_result)
+                        print("=== Respuesta de análisis de imagen ===")
+                        print(response_text)
+                        tts_client.texto_a_voz_streaming(response_text, output_file="output.mp3")
+                    else:
+                        print("No se pudo capturar la imagen de la cámara.")
+                except Exception as e:
+                    print("Error al analizar la imagen:", e)
+                continue
 
             # 3) Obtener respuesta de GPT
             chat_response = get_chat_response(result_text, personality_file="chat/personality_system.txt")
