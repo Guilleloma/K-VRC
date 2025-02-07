@@ -4,7 +4,7 @@ import os
 # Añadir el directorio padre al sys.path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from led_controller import LEDController
+from led.led_controller import LEDController
 import time
 
 def main():

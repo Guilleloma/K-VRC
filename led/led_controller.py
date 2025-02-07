@@ -1,4 +1,17 @@
-from utils import is_raspberry_pi
+import os
+import sys
+
+# Agregar directorio padre al path (solución temporal)
+parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if parent_dir not in sys.path:
+    sys.path.insert(0, parent_dir)
+
+try:
+    from utils import is_raspberry_pi
+except ImportError:
+    # Definir una versión dummy de is_raspberry_pi si no existe
+    def is_raspberry_pi():
+        return False
 
 if is_raspberry_pi():
     import RPi.GPIO as GPIO

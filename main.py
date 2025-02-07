@@ -1,12 +1,13 @@
 import os
 import time
 from chat.chat_manager import get_chat_response, load_memory, save_memory  # Importamos memoria
-from oled_controller import OledFaceController
+from face.oled_controller import OledFaceController
 from tts.tts_openai import OpenAITTS
 from stt.stt_main import transcribe_audio  # Ahora solo importamos la transcripción
 from sts.sts_speech import sts_speech
-from led_controller import LEDController  # Importamos el controlador del LED
+from led.led_controller import LEDController  # Importamos el controlador del LED
 from vision.camera import capture_camera_image, analyze_image  # Funciones para capturar y analizar imagen
+from audio.audio_controller import AudioPlayer
 
 
 # Ruta corregida para la memoria
@@ -20,6 +21,14 @@ def reset_memory():
         print("🔄 Memoria borrada al iniciar K-VRC.")
 
 def main():
+    # Instanciamos el reproductor de audio
+    player = AudioPlayer()
+    try:
+        # Reproducimos 'hi.wav' para indicar que el sistema ha arrancado
+        player.play_audio("hi.wav")
+    except Exception as e:
+        print(f"Error al reproducir el audio de inicio: {e}")
+
     # 🔹 Reiniciamos la memoria SOLO al iniciar K-VRC
     reset_memory()
     

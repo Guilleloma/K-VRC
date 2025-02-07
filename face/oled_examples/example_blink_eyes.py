@@ -4,7 +4,7 @@ import os
 # Añadir el directorio padre al sys.path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from oled_controller import OledFaceController
+from face.oled_controller import OledFaceController
 
 
 def main():

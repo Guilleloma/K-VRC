@@ -1,3 +1,14 @@
-openai==0.27.0
+# Versión mínima requerida de openai para usar la nueva interfaz
+openai>=1.0.0
+
+# Se requiere para la captura de audio en tiempo real
 pyaudio==0.2.11
+
+# Usado en el procesamiento numérico, por ejemplo en el STT
 numpy==1.23.5
+
+# OpenCV para la captura y procesamiento de imágenes en el módulo vision
+opencv-python>=4.7.0.72
+
+# pydub para la manipulación y reproducción de audio en el TTS
+pydub>=0.25.1

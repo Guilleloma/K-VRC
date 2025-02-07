@@ -6,7 +6,7 @@ import os
 # Añadir el directorio padre al sys.path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from servo_controller import ServoController
+from movement.servo_controller import ServoController
 import time
 
 def main():

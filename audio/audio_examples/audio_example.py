@@ -4,7 +4,7 @@ import sys
 # Añadir el directorio padre al sys.path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from audio_controller import AudioPlayer
+from audio.audio_controller import AudioPlayer
 
 def main():
     current_dir = os.path.dirname(os.path.abspath(__file__))
