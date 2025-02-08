@@ -42,33 +42,41 @@ def main():
         controller.display_drunk_eyes()
         time.sleep(5)
         controller.cleanup()
-        time.sleep(0.5)
+        time.sleep(1)  # Pausa más larga antes de las animaciones
 
         # 4. Ejemplo de ojos parpadeantes (5 segundos)
         print("\n4. Demostración de parpadeo")
+        controller.cleanup()
+        time.sleep(0.5)  # Asegurar que el display está limpio
         controller.start_eyes_animation(interval_open=3.0, interval_blink=0.1)
         time.sleep(5)
         controller.stop_eyes_animation()
-        controller.cleanup()  # Limpiamos entre demostraciones
-        time.sleep(0.5)  # Pequeña pausa
+        time.sleep(0.5)  # Esperar a que el thread se detenga
+        controller.cleanup()
+        time.sleep(1)  # Pausa más larga entre animaciones
         
         # 5. Ejemplo de boca en movimiento (5 segundos)
         print("\n5. Demostración de boca")
+        controller.cleanup()
+        time.sleep(0.5)
         controller.start_mouth_animation(interval_mouth=0.2)
         time.sleep(5)
         controller.stop_mouth_animation()
-        controller.cleanup()
         time.sleep(0.5)
+        controller.cleanup()
+        time.sleep(1)
         
         # 6. Ejemplo de ojos y boca simultáneos (5 segundos)
         print("\n6. Demostración de ojos y boca")
+        controller.cleanup()
+        time.sleep(0.5)
         controller.start_eyes_animation()
         controller.start_mouth_animation()
         time.sleep(5)
         controller.stop_eyes_animation()
         controller.stop_mouth_animation()
-        controller.cleanup()
         time.sleep(0.5)
+        controller.cleanup()
         
     except KeyboardInterrupt:
         print("\nDemostración interrumpida por el usuario.")
@@ -76,6 +84,7 @@ def main():
         # Asegurarse de detener todas las animaciones y limpiar
         controller.stop_eyes_animation()
         controller.stop_mouth_animation()
+        time.sleep(0.5)  # Esperar a que los threads se detengan
         controller.cleanup()
         print("\nDemostración completada y display limpiado.")
 
