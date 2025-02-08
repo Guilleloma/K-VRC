@@ -1,18 +1,34 @@
-import sys
 import os
+import sys
 
-# Añadir el directorio padre al sys.path
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Se agrega el directorio raíz del proyecto al sys.path,
+# para que se puedan importar utils y demás módulos correctamente.
+print("Current directory:", os.getcwd())
+print("Script location:", os.path.dirname(__file__))
+
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+print("Project root path:", project_root)
+print("sys.path before:", sys.path)
+
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
+print("sys.path after:", sys.path)
 
 from face.oled_controller import OledFaceController
 
 def main():
-    oled = OledFaceController()
+    print("Mostrando imagen feliz...")
+    controller = OledFaceController()
     
     try:
-        oled.display_happy_image()  # Mostrar la imagen "Happy"
+        controller.display_happy_image()  # Muestra la imagen "happy.bmp"
+        input("Presiona Enter para salir...")
     except KeyboardInterrupt:
-        oled.cleanup()
+        print("Interrumpido por el usuario.")
+    finally:
+        controller.cleanup()
+        print("Display limpiado.")
 
 if __name__ == "__main__":
     main()
