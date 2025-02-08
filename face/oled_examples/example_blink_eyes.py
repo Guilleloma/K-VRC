@@ -1,8 +1,10 @@
 import sys
 import os
 
-# Añadir el directorio padre al sys.path
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Se asume que este archivo está dentro de 'face'; agregamos el directorio padre al sys.path
+parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if parent_dir not in sys.path:
+    sys.path.insert(0, parent_dir)
 
 from face.oled_controller import OledFaceController
 
