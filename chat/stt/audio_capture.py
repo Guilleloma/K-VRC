@@ -3,15 +3,16 @@
 import pyaudio
 import wave
 import numpy as np
+from config import SILENCE_THRESHOLD, CHANNELS, RATE, CHUNK, SILENCE_DURATION, TEMP_AUDIO_PATH
 
 class RealTimeAudioCapture:
     def __init__(self,
-                 channels=1,
-                 rate=16000,
-                 chunk=1024,
-                 silence_threshold=20,  # Ajustar según tus pruebas mirar el stt_main.py para ver el valor
-                 silence_duration=2.0,  # Ajustar según tus pruebas mirar el stt_main.py para ver el valor
-                 output_path="temp_audio.wav"):
+                 channels=CHANNELS,
+                 rate=RATE,
+                 chunk=CHUNK,
+                 silence_threshold=SILENCE_THRESHOLD,
+                 silence_duration=SILENCE_DURATION,
+                 output_path=TEMP_AUDIO_PATH):
         """
         :param channels: 1 = mono, 2 = stereo, etc.
         :param rate: Frecuencia de muestreo (16k, 44.1k, etc.)

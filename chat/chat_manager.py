@@ -32,7 +32,7 @@ def load_system_personality(file_path: str) -> str:
     with open(file_path, "r", encoding="utf-8") as f:
         return f.read()
 
-def get_chat_response(user_text: str, personality_file="chat/personality_system.txt") -> str:
+def get_chat_response(user_text: str, personality_file="personality_system.txt") -> str:
     """Envía 'user_text' a la API de OpenAI con memoria guardada en JSON."""
     system_content = load_system_personality(personality_file)
 

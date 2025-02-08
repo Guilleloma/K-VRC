@@ -84,7 +84,7 @@ def main():
                 continue
 
             # 3) Obtener respuesta de GPT
-            chat_response = get_chat_response(result_text, personality_file="chat/personality_system.txt")
+            chat_response = get_chat_response(result_text, personality_file="personality_system.txt")
             print("=== Respuesta de K-VRC ===")
             print(chat_response)
             print("====================================\n")

@@ -3,10 +3,12 @@ import wave
 import numpy as np
 from .stt_whisper_http import transcribe_file
 from .audio_capture import RealTimeAudioCapture
+from config import SILENCE_THRESHOLD, CHANNELS, RATE, CHUNK, SILENCE_DURATION, TEMP_AUDIO_PATH
 
-def is_audio_speech(file_path, silence_threshold=12):
+def is_audio_speech(file_path):
     """
-    Verifica si el audio grabado contiene voz real o solo ruido de fondo/silencio.
+    Verifica si el audio grabado contiene voz real o solo ruido de fondo/silencio,
+    usando el umbral global SILENCE_THRESHOLD.
     """
     with wave.open(file_path, 'rb') as wf:
         num_frames = wf.getnframes()
@@ -17,7 +19,7 @@ def is_audio_speech(file_path, silence_threshold=12):
         rms_value = np.sqrt(np.mean(audio_np.astype(np.float64) ** 2))
         print(f"🔊 RMS promedio del audio grabado: {rms_value}")
 
-        return rms_value >= silence_threshold  # True si hay voz, False si es solo ruido
+        return rms_value >= SILENCE_THRESHOLD  # True si hay voz, False si es solo ruido
 
 def transcribe_audio():
     """
@@ -25,17 +27,17 @@ def transcribe_audio():
     """
     # Forzar que la ruta de salida sea relativa al directorio de este módulo (stt)
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    default_output_path = os.path.join(base_dir, "temp_audio.wav")
+    default_output_path = os.path.join(base_dir, TEMP_AUDIO_PATH)
     default_output_path = os.path.abspath(default_output_path)  # aseguramos que sea una ruta absoluta
 
     print(f"[DEBUG] Guardando audio temporal en: {default_output_path}")
 
     audio_capture = RealTimeAudioCapture(
-        channels=1,
-        rate=16000,
-        chunk=1024,
-        silence_threshold=12,
-        silence_duration=2.0,
+        channels=CHANNELS,
+        rate=RATE,
+        chunk=CHUNK,
+        silence_threshold=SILENCE_THRESHOLD,
+        silence_duration=SILENCE_DURATION,
         output_path=default_output_path
     )
 
@@ -43,7 +45,7 @@ def transcribe_audio():
     audio_file_path = audio_capture.listen_and_record()
 
     # Verificar si el audio tiene voz
-    if not is_audio_speech(audio_file_path, silence_threshold=12):
+    if not is_audio_speech(audio_file_path):
         print("🤫 Silencio detectado. No se enviará nada a Whisper.")
         return None  # No hay transcripción
 

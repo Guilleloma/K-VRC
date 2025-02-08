@@ -21,7 +21,7 @@ class OpenAITTS:
             # podrías usar directamente `self.client = OpenAI()`
             self.client = OpenAI()  
 
-    def texto_a_voz_streaming(self, texto, output_file="output.mp3", voice="alloy", model="tts-1"):
+    def texto_a_voz_streaming(self, texto, output_file="output.mp3", voice="fable", model="tts-1"):
         """
         Envía 'texto' a la API TTS de OpenAI, guarda la respuesta en 'output_file'
         y luego reproduce el archivo usando pydub.
