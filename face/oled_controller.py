@@ -221,11 +221,26 @@ class OledFaceController:
         self.disp.display()
 
     def display_drunk_eyes(self):
-        """Carga y muestra la imagen de ojos borrachos."""
+        """
+        Muestra los ojos borrachos en la mitad superior y la boca cerrada en la mitad inferior.
+        """
+        # Crear una imagen completa nueva
+        full_image = Image.new('1', (self.disp.width, self.disp.height))
+        
+        # Cargar y redimensionar los ojos borrachos para la mitad superior
         base_dir = os.path.dirname(os.path.abspath(__file__))
-        image_path = os.path.join(base_dir, 'images', 'eyes_drunk.bmp')
-        drunk_image = Image.open(image_path).convert('1').resize((128, 64))
-        self.disp.image(drunk_image)
+        drunk_eyes_path = os.path.join(base_dir, 'images', 'eyes_drunk.bmp')
+        drunk_eyes = Image.open(drunk_eyes_path).convert('1').resize((128, 32))
+        
+        # Cargar la boca cerrada para la mitad inferior
+        mouth_closed = self.mouth_images['closed']
+        
+        # Pegar ojos en la mitad superior y boca en la mitad inferior
+        full_image.paste(drunk_eyes, (0, 0))
+        full_image.paste(mouth_closed, (0, self.disp.height // 2))
+        
+        # Mostrar la imagen completa
+        self.disp.image(full_image)
         self.disp.display()
 
     def cleanup(self):
