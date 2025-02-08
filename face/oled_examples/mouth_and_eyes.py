@@ -1,40 +1,43 @@
-import sys
 import os
+import sys
 import time
-import threading
-from queue import Queue
 
+# Se agrega el directorio raíz del proyecto al sys.path,
+# para que se puedan importar utils y demás módulos correctamente.
+print("Current directory:", os.getcwd())
+print("Script location:", os.path.dirname(__file__))
 
-# Añadir el directorio padre al sys.path
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+print("Project root path:", project_root)
+print("sys.path before:", sys.path)
 
-from face.oled_controller import OledFaceController  # Importa la clase OledFaceController desde tu módulo o archivo
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
+print("sys.path after:", sys.path)
+
+from face.oled_controller import OledFaceController
 
 def main():
-    oled = OledFaceController()
-
-    # Define los intervalos para el parpadeo de los ojos y el movimiento de la boca
-    interval_open_eyes = 5
-    interval_blink_eyes = 0.05  # Reducción para aumentar la fluidez de los ojos
-    interval_move_mouth = 0.5  # Intervalo para el movimiento de la boca
-
-    # Crea una cola para encolar las órdenes de cambio de imágenes
-    image_queue = Queue()
-
-    # Crea dos subprocesos para ejecutar las funciones de los ojos y la boca en paralelo
-    thread_eyes = threading.Thread(target=oled.move_eyes_randomly, args=(interval_open_eyes, interval_blink_eyes))
-    thread_mouth = threading.Thread(target=oled.move_mouth_continuously, args=(interval_move_mouth,))
-
-    # Inicia los subprocesos
-    thread_eyes.start()
-    thread_mouth.start()
-
+    print("Iniciando animación de ojos y boca...")
+    controller = OledFaceController()
+    
     try:
-        while True:
-            time.sleep(1)  # Espera indefinidamente, los subprocesos se encargan del resto
-
+        # Iniciamos ambas animaciones
+        controller.start_eyes_animation(interval_open=3.0, interval_blink=0.1)
+        controller.start_mouth_animation(interval_mouth=0.2)
+        
+        # Dejamos que las animaciones corran durante 10 segundos
+        time.sleep(10)
+        
     except KeyboardInterrupt:
-        oled.cleanup()
+        print("Interrumpido por el usuario.")
+    finally:
+        # Detenemos ambas animaciones y limpiamos
+        controller.stop_eyes_animation()
+        controller.stop_mouth_animation()
+        controller.cleanup()
+        print("Animaciones detenidas y display limpiado.")
 
 if __name__ == "__main__":
     main()
