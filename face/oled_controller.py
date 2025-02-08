@@ -220,6 +220,14 @@ class OledFaceController:
         self.disp.image(happy_image)
         self.disp.display()
 
+    def display_drunk_eyes(self):
+        """Carga y muestra la imagen de ojos borrachos."""
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        image_path = os.path.join(base_dir, 'images', 'eyes_drunk.bmp')
+        drunk_image = Image.open(image_path).convert('1').resize((128, 64))
+        self.disp.image(drunk_image)
+        self.disp.display()
+
     def cleanup(self):
         """Limpieza final."""
         self.disp.clear()
