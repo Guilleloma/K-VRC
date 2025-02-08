@@ -1,8 +1,8 @@
 import os
 import wave
 import numpy as np
-from stt.stt_whisper_http import transcribe_file
-from stt.audio_capture import RealTimeAudioCapture
+from .stt_whisper_http import transcribe_file
+from .audio_capture import RealTimeAudioCapture
 
 def is_audio_speech(file_path, silence_threshold=12):
     """

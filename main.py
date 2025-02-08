@@ -1,13 +1,14 @@
 import os
 import time
-from chat.chat_manager import get_chat_response, load_memory, save_memory  # Importamos memoria
+from chat.chat_manager import get_chat_response, load_memory, save_memory
 from face.oled_controller import OledFaceController
-from tts.tts_openai import OpenAITTS
-from stt.stt_main import transcribe_audio  # Ahora solo importamos la transcripción
-from sts.sts_speech import sts_speech
-from led.led_controller import LEDController  # Importamos el controlador del LED
-from vision.camera import capture_camera_image, analyze_image  # Funciones para capturar y analizar imagen
+from chat.tts.tts_openai import OpenAITTS
+from chat.stt.stt_main import transcribe_audio
+from chat.sts.sts_speech import sts_speech
+from led.led_controller import LEDController
+from vision.camera import capture_camera_image, analyze_image
 from audio.audio_controller import AudioPlayer
+from chat.stt.stt_whisper_http import transcribe_file
 
 
 # Ruta corregida para la memoria
@@ -39,7 +40,7 @@ def main():
     face_controller.start_eyes_animation(interval_open=3.0, interval_blink=0.1)
 
     # Instanciamos nuestro TTS (aunque aquí no lo estamos usando)
-    tts_client = OpenAITTS()  # Usa la API_KEY de la variable de entorno
+    tts_client = OpenAITTS()  # Usando el nuevo import
 
     # 🔹 Instanciamos y activamos el efecto FIRE del LED al iniciar el programa
     led = LEDController(pin=27)  # Asegúrate de que el pin es el correcto
