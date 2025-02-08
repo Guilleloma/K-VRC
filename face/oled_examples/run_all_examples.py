@@ -26,12 +26,16 @@ def main():
         controller.start_eyes_animation(interval_open=3.0, interval_blink=0.1)
         time.sleep(5)
         controller.stop_eyes_animation()
+        controller.cleanup()  # Limpiamos entre demostraciones
+        time.sleep(0.5)  # Pequeña pausa
         
         # 2. Ejemplo de boca en movimiento (5 segundos)
         print("\n2. Demostración de boca")
         controller.start_mouth_animation(interval_mouth=0.2)
         time.sleep(5)
         controller.stop_mouth_animation()
+        controller.cleanup()
+        time.sleep(0.5)
         
         # 3. Ejemplo de ojos y boca simultáneos (5 segundos)
         print("\n3. Demostración de ojos y boca")
@@ -40,21 +44,29 @@ def main():
         time.sleep(5)
         controller.stop_eyes_animation()
         controller.stop_mouth_animation()
+        controller.cleanup()
+        time.sleep(0.5)
         
-        # 4. Imagen feliz (3 segundos)
+        # 4. Imagen feliz (5 segundos)
         print("\n4. Mostrando cara feliz")
+        controller.cleanup()  # Limpiamos antes de mostrar la imagen
+        time.sleep(0.2)
         controller.display_happy_image()
-        time.sleep(3)
+        time.sleep(5)
+        controller.cleanup()
+        time.sleep(0.5)
         
-        # 5. Imagen WTF (3 segundos)
+        # 5. Imagen WTF (5 segundos)
         print("\n5. Mostrando cara WTF")
         controller.display_wtf_image()
-        time.sleep(3)
+        time.sleep(5)
+        controller.cleanup()
+        time.sleep(0.5)
         
-        # 6. Ojos borrachos (3 segundos)
+        # 6. Ojos borrachos (5 segundos)
         print("\n6. Mostrando ojos borrachos")
         controller.display_drunk_eyes()
-        time.sleep(3)
+        time.sleep(5)
         
     except KeyboardInterrupt:
         print("\nDemostración interrumpida por el usuario.")
