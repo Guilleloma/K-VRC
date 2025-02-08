@@ -1,9 +1,15 @@
 import os
+import sys
 import random
 from PIL import Image
 import time
 import threading
 from queue import Queue
+
+# Aseguramos que el directorio raíz del proyecto (donde se encuentra utils.py) esté en sys.path
+parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if parent_dir not in sys.path:
+    sys.path.insert(0, parent_dir)
 
 # Importamos la función de detección desde utils.py
 from utils import is_raspberry_pi
