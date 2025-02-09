@@ -3,6 +3,13 @@ import cv2
 import time
 import base64
 import openai
+import sys
+
+# Aseguramos que se encuentre el módulo 'utils'
+# Si ya configuraste PYTHONPATH, esta línea no sería necesaria
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from utils import create_video_capture
 
 def capture_camera_image(output_path=None):
     """
@@ -25,9 +32,9 @@ def capture_camera_image(output_path=None):
         output_path = os.path.abspath(output_path)
         print(f"[DEBUG] Guardando imagen en: {output_path}")
     
-    cap = cv2.VideoCapture(0)
+    cap = create_video_capture()
     if not cap.isOpened():
-        print("Error: no se pudo abrir la cámara")
+        print("Error: Could not open camera")
         return None
 
     # Damos un pequeño retardo para que la cámara se inicie
