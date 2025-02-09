@@ -37,6 +37,10 @@ def capture_camera_image(output_path=None):
         print("Error: Could not open camera")
         return None
 
+    # Reducir la resolución para disminuir la carga de memoria
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+    
     # Damos un pequeño retardo para que la cámara se inicie
     time.sleep(0.5)
     ret, frame = cap.read()
