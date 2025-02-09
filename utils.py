@@ -30,8 +30,8 @@ def create_video_capture(device_index=0):
     :return: Instancia de cv2.VideoCapture.
     """
     if platform.system() == "Darwin":
-        # En macOS, usar el backend por defecto
+        # En macOS, usamos el backend por defecto
         return cv2.VideoCapture(device_index)
     else:
-        # En Linux (ej. Raspberry Pi), forzar el backend V4L2
-        return cv2.VideoCapture(device_index, cv2.CAP_V4L2)
+        # En Linux, usar el backend predeterminado en lugar de forzar V4L2
+        return cv2.VideoCapture(device_index)
