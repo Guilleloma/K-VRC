@@ -41,12 +41,24 @@ def capture_camera_image(output_path=None):
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
     
-    # Damos un pequeño retardo para que la cámara se inicie
-    time.sleep(0.5)
-    ret, frame = cap.read()
+    # Aumentamos el tiempo de espera para que la cámara se estabilice (por ejemplo, 2 segundos)
+    time.sleep(2)
+    
+    # Intentar leer el frame en varios intentos
+    max_attempts = 5
+    attempts = 0
+    ret = False
+    frame = None
+    while attempts < max_attempts and not ret:
+        ret, frame = cap.read()
+        if not ret:
+            print(f"[DEBUG] Intento {attempts + 1} fallido, reintentando...")
+            time.sleep(0.2)
+        attempts += 1
+
     cap.release()
 
-    if not ret:
+    if not ret or frame is None:
         print("Error: no se pudo capturar la imagen")
         return None
 
