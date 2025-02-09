@@ -20,7 +20,7 @@ def capture_camera_image(output_path=None):
     que usa libcamera-still), de lo contrario se utiliza OpenCV.
     
     Si no se especifica output_path, se guarda en la carpeta 'vision' junto a este
-    archivo, con el nombre 'captured_image.png'.
+    archivo, con el nombre 'captured_image.jpg'.
     
     :param output_path: Ruta donde se guardará la imagen.
     :return: Ruta del archivo de la imagen capturada o None si falla.
@@ -30,7 +30,7 @@ def capture_camera_image(output_path=None):
     # Si no se especifica output_path, usar la carpeta del módulo
     if output_path is None:
         base_dir = os.path.dirname(os.path.realpath(__file__))
-        output_path = os.path.join(base_dir, "captured_image.png")
+        output_path = os.path.join(base_dir, "captured_image.jpg")
         output_path = os.path.abspath(output_path)
         print(f"[DEBUG] Guardando imagen en: {output_path}")
     
@@ -106,7 +106,7 @@ def analyze_image(image_path, model="gpt-4o-mini", max_tokens=300):
             "role": "user",
             "content": [
                 {"type": "text", "text": "¿Qué ves en esta imagen?"},
-                {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{base64_image}"}}
+                {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"}}
             ]
         }
     ]
