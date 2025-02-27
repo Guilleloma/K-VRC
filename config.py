@@ -8,4 +8,8 @@ CHUNK = 1024                 # Tamaño de cada bloque de audio
 SILENCE_DURATION = 2.0       # Segundos de silencio consecutivos para detener la grabación
 TEMP_AUDIO_PATH = "temp_audio.wav"  # Ruta por defecto para guardar el audio temporal
 
+# Configuración específica de PyAudio
+AUDIO_FORMAT = 'int16'     # Formato de audio
+DEVICE_INDEX = None        # None usa el dispositivo por defecto, cambiar si es necesario
+
 # Agrega otras variables globales:

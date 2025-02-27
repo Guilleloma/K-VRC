@@ -1,14 +1,24 @@
-# Versión mínima requerida de openai para usar la nueva interfaz
-openai>=1.0.0
+# K-VRC Project Dependencies
 
-# Se requiere para la captura de audio en tiempo real
-pyaudio==0.2.11
+# HTTP requests
+requests
 
-# Usado en el procesamiento numérico, por ejemplo en el STT
-numpy==1.23.5
+# Image manipulation
+Pillow
 
-# OpenCV para la captura y procesamiento de imágenes en el módulo vision
-opencv-python>=4.7.0.72
+# Computer vision and numerical operations
+opencv-python
+numpy
 
-# pydub para la manipulación y reproducción de audio en el TTS
-pydub>=0.25.1
+# Audio processing and manipulation
+pydub
+PyAudio
+
+# Text-to-Speech synthesis
+pyttsx3
+
+# Raspberry Pi GPIO control
+RPi.GPIO
+
+# OLED display library for Raspberry Pi
+Adafruit_CircuitPython_SSD1306
