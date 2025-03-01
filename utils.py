@@ -1,5 +1,15 @@
 import platform
 import os
+<<<<<<< Updated upstream
+=======
+
+# Modificar la importación de cv2 para que sea condicional
+try:
+    import cv2
+    has_opencv = True
+except ImportError:
+    has_opencv = False
+>>>>>>> Stashed changes
 
 def is_raspberry_pi():
     """
@@ -11,11 +21,12 @@ def is_raspberry_pi():
     :return: True si se detecta Raspberry Pi, False en caso contrario.
     """
     try:
-        with open('/proc/device-tree/model', 'r') as model_file:
-            model = model_file.read().lower()
-            return 'raspberry pi' in model
-    except Exception:
-        return False
+        with open('/proc/device-tree/model', 'r') as f:
+            model = f.read()
+        return 'Raspberry Pi' in model
+    except:
+        # Fallback al método anterior si no podemos leer el modelo
+        return platform.system() == 'Linux' and platform.machine().startswith(('arm', 'aarch'))
 
 def create_video_capture(device_index=0):
     """
