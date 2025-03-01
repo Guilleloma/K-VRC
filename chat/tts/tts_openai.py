@@ -29,7 +29,35 @@ class OpenAITTS:
             # Intenta usar el valor por defecto
             self.client = OpenAI()  
 
-    # [el resto del código]
+    def texto_a_voz_streaming(self, texto, output_file="output.mp3", voice="nova", model="tts-1"):
+        """
+        Convierte texto a voz usando la API de OpenAI y guarda el resultado en un archivo.
+        Luego reproduce el archivo usando el método reproducir_audio.
+        
+        Args:
+            texto (str): El texto a convertir a voz.
+            output_file (str): Nombre del archivo de salida.
+            voice (str): La voz a utilizar. Opciones: 'alloy', 'echo', 'fable', 'onyx', 'nova', 'shimmer'.
+            model (str): El modelo a utilizar. Opciones: 'tts-1', 'tts-1-hd'.
+        """
+        try:
+            print(f"[DEBUG] Iniciando transcripción con Whisper. Archivo: {texto}")
+            
+            # Generar el audio con la API de OpenAI
+            response = self.client.audio.speech.create(
+                model=model,
+                voice=voice,
+                input=texto
+            )
+            
+            # Guardar el audio en un archivo
+            response.stream_to_file(output_file)
+            
+            # Reproducir el audio
+            self.reproducir_audio(output_file)
+            
+        except Exception as e:
+            print(f"[OpenAITTS] Error al generar audio: {e}")
 
     def reproducir_audio(self, audio_file):
         """
