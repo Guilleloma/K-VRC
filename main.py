@@ -10,6 +10,7 @@ from vision.camera import capture_camera_image, analyze_image
 from audio.audio_controller import AudioPlayer
 from chat.stt.stt_whisper_http import transcribe_file
 from dotenv import load_dotenv
+from config import LED_PIN  # Importamos la configuración del pin del LED
 
 # Cargar variables de entorno del archivo .env
 load_dotenv()
@@ -27,40 +28,47 @@ def reset_memory():
 def main():
     # Instanciamos el reproductor de audio
     player = AudioPlayer()
+    
+    # Inicializamos el controlador LED con el pin definido en config.py
+    led = LEDController(pin=LED_PIN)
+    
     try:
+        # Encendemos el LED como señal visual
+        led.turn_on()
+        
         # Reproducimos 'hi.wav' para indicar que el sistema ha arrancado
         player.play_audio("hi.wav")
+        
+        # El LED permanece encendido como indicador de que el sistema está funcionando
     except Exception as e:
         print(f"Error al reproducir el audio de inicio: {e}")
+        led.turn_off()  # Solo apagamos el LED si hay error
 
-    # 🔹 Reiniciamos la memoria SOLO al iniciar K-VRC
+    # Reiniciamos la memoria SOLO al iniciar K-VRC
     reset_memory()
     
-    # 🔹 Cargamos la memoria después de haberla reiniciado
+    # Cargamos la memoria después de haberla reiniciado
     chat_history = load_memory()
 
+    # Inicializamos el controlador de la cara OLED
     face_controller = OledFaceController()
     face_controller.start_eyes_animation(interval_open=3.0, interval_blink=0.1)
 
-    # Instanciamos nuestro TTS (aunque aquí no lo estamos usando)
-    tts_client = OpenAITTS()  # Usando el nuevo import
-
-    # 🔹 Instanciamos y activamos el efecto FIRE del LED al iniciar el programa
-    led = LEDController(pin=27)  # Asegúrate de que el pin es el correcto
-    print("🔥 Iniciando efecto FIRE del LED...")
-    led.fire_effect(duration=2)  # El efecto dura 10 segundos al inicio
+    # Inicializamos el cliente TTS
+    tts_client = OpenAITTS()
 
     print("=== K-VRC Conversational ===")
     print("Presiona Ctrl+C para salir.\n")
 
     try:
         while True:
+            # El LED permanece encendido mientras esperamos
             print("🎙️ Escuchando... (Habla y luego guarda silencio)")
             
-            # 1) Obtener transcripción de STT
+            # Obtener transcripción de voz a texto
             result_text = transcribe_audio()
 
-            # 2) Verificar que haya texto antes de continuar
+            # Verificar que haya texto antes de continuar
             if not result_text:
                 print("⚠️ No se obtuvo texto válido. Intentando nuevamente...")
                 continue
@@ -69,7 +77,7 @@ def main():
             print(result_text)
             print("=====================\n")
 
-            # 2) Si se solicita describir lo que "ve" el robot, se captura una imagen de la cámara
+            # Si se solicita describir lo que "ve" el robot
             if "lo que ves" in result_text.lower() or "qué ves" in result_text.lower():
                 try:
                     print("🚀 Capturando imagen de la cámara para analizar lo que veo...")
@@ -79,43 +87,54 @@ def main():
                         response_text = "Esto es lo que veo: " + str(analysis_result)
                         print("=== Respuesta de análisis de imagen ===")
                         print(response_text)
+                        
+                        # Preparamos animación para responder
+                        face_controller.stop_eyes_animation()
+                        face_controller.start_mouth_animation(interval_mouth=0.2)
+                        
+                        # Generamos y reproducimos la respuesta
                         tts_client.texto_a_voz_streaming(response_text, output_file="output.mp3")
+                        
+                        # Restauramos estado normal
+                        face_controller.stop_mouth_animation()
+                        face_controller.start_eyes_animation()
                     else:
                         print("No se pudo capturar la imagen de la cámara.")
                 except Exception as e:
                     print("Error al analizar la imagen:", e)
                 continue
 
-            # 3) Obtener respuesta de GPT
+            # Obtener respuesta de GPT
             chat_response = get_chat_response(result_text, personality_file="personality_system.txt")
             print("=== Respuesta de K-VRC ===")
             print(chat_response)
             print("====================================\n")
 
-            # 4) Simular el momento de "hablar"
+            # Preparamos animación para responder
             face_controller.stop_eyes_animation()
             face_controller.start_mouth_animation(interval_mouth=0.2)
 
-            # 5) Llamar a STS (Speech-to-Speech) en tiempo real
-            #sts_speech(chat_response)
-            # Si prefieres usar TTS tradicional, descomenta la siguiente línea y comenta la línea de STS:
+            # Generar y reproducir respuesta de texto a voz
             tts_client.texto_a_voz_streaming(chat_response, output_file="output.mp3")
 
-            # 6) Parar boca y volver a encender los ojos
+            # Restauramos el estado normal
             face_controller.stop_mouth_animation()
             face_controller.start_eyes_animation()
 
-            time.sleep(1)
+            # Pequeña pausa antes de volver a escuchar
+            time.sleep(0.5)
 
     except KeyboardInterrupt:
         print("🛑 Interrumpido por el usuario. Saliendo...")
     finally:
-        print("🔆 Desactivando efecto y apagando LED...")
-        led.blink_neon_effect(duration=2)  # Pequeño efecto antes de apagar
+        # Secuencia de apagado ordenada
+        print("🔆 Finalizando y limpiando recursos...")
+        
+        # Aseguramos que todo queda apagado y limpio
         led.turn_off()
         led.cleanup()
-       
-        # 🔹 Detener animaciones antes de salir
+        
+        # Limpiar controlador de cara OLED
         face_controller.stop_eyes_animation()
         face_controller.stop_mouth_animation()
         face_controller.cleanup()
