@@ -41,7 +41,7 @@ class OpenAITTS:
             model (str): El modelo a utilizar. Opciones: 'tts-1', 'tts-1-hd'.
         """
         try:
-            print(f"[DEBUG] Iniciando transcripción con Whisper. Archivo: {texto}")
+            print(f"[TTS] Generando audio para texto de {len(texto)} caracteres, usando voz: {voice}")
             
             # Generar el audio con la API de OpenAI
             response = self.client.audio.speech.create(
@@ -64,10 +64,10 @@ class OpenAITTS:
         Reproduce un archivo MP3 usando únicamente mpg123, sin intentar usar pydub/PyAudio.
         """
         try:
-            # Usamos directamente mpg123 para reproducir el MP3 - sin conversiones ni alternativas
+            # Usamos directamente mpg123 para reproducir el MP3 en modo silencioso
             import subprocess
-            print("[OpenAITTS] Reproduciendo directamente con mpg123...")
-            subprocess.run(["mpg123", audio_file], check=False)
-            print("[OpenAITTS] Reproducción finalizada.")
+            print("[TTS] Reproduciendo audio...")
+            subprocess.run(["mpg123", "-q", audio_file], check=False)
+            print("[TTS] Reproducción finalizada.")
         except Exception as e:
-            print(f"[OpenAITTS] Error: {e}")
+            print(f"[TTS] Error: {e}")
