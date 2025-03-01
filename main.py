@@ -88,16 +88,21 @@ def main():
                         print("=== Respuesta de análisis de imagen ===")
                         print(response_text)
                         
-                        # Preparamos animación para responder
-                        face_controller.stop_eyes_animation()
-                        face_controller.start_mouth_animation(interval_mouth=0.2)
+                        # Primero generamos el audio (sin reproducirlo aún)
+                        audio_file = tts_client.generar_audio(response_text, output_file="output.mp3")
                         
-                        # Generamos y reproducimos la respuesta
-                        tts_client.texto_a_voz_streaming(response_text, output_file="output.mp3")
-                        
-                        # Restauramos estado normal
-                        face_controller.stop_mouth_animation()
-                        face_controller.start_eyes_animation()
+                        if audio_file:
+                            # Preparamos animación para responder JUSTO ANTES de reproducir
+                            face_controller.stop_eyes_animation()
+                            face_controller.start_mouth_animation(interval_mouth=0.2)
+                            
+                            # Ahora reproducimos el audio
+                            print("[MAIN] Iniciando reproducción con animación de boca...")
+                            tts_client.reproducir_audio(audio_file)
+                            
+                            # Restauramos estado normal
+                            face_controller.stop_mouth_animation()
+                            face_controller.start_eyes_animation()
                     else:
                         print("No se pudo capturar la imagen de la cámara.")
                 except Exception as e:
@@ -110,16 +115,21 @@ def main():
             print(chat_response)
             print("====================================\n")
 
-            # Preparamos animación para responder
-            face_controller.stop_eyes_animation()
-            face_controller.start_mouth_animation(interval_mouth=0.2)
-
-            # Generar y reproducir respuesta de texto a voz
-            tts_client.texto_a_voz_streaming(chat_response, output_file="output.mp3")
-
-            # Restauramos el estado normal
-            face_controller.stop_mouth_animation()
-            face_controller.start_eyes_animation()
+            # Primero generamos el audio (sin reproducirlo aún)
+            audio_file = tts_client.generar_audio(chat_response, output_file="output.mp3")
+            
+            if audio_file:
+                # Preparamos animación para responder JUSTO ANTES de reproducir
+                face_controller.stop_eyes_animation()
+                face_controller.start_mouth_animation(interval_mouth=0.2)
+                
+                # Ahora reproducimos el audio
+                print("[MAIN] Iniciando reproducción con animación de boca...")
+                tts_client.reproducir_audio(audio_file)
+                
+                # Restauramos el estado normal
+                face_controller.stop_mouth_animation()
+                face_controller.start_eyes_animation()
 
             # Pequeña pausa antes de volver a escuchar
             time.sleep(0.5)

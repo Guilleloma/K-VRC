@@ -29,16 +29,19 @@ class OpenAITTS:
             # Intenta usar el valor por defecto
             self.client = OpenAI()  
 
-    def texto_a_voz_streaming(self, texto, output_file="output.mp3", voice="nova", model="tts-1"):
+    def generar_audio(self, texto, output_file="output.mp3", voice="nova", model="tts-1"):
         """
-        Convierte texto a voz usando la API de OpenAI y guarda el resultado en un archivo.
-        Luego reproduce el archivo usando el método reproducir_audio.
+        Convierte texto a voz usando la API de OpenAI y guarda el resultado en un archivo,
+        pero NO reproduce el audio (esto permite sincronizar la animación después).
         
         Args:
             texto (str): El texto a convertir a voz.
             output_file (str): Nombre del archivo de salida.
             voice (str): La voz a utilizar. Opciones: 'alloy', 'echo', 'fable', 'onyx', 'nova', 'shimmer'.
             model (str): El modelo a utilizar. Opciones: 'tts-1', 'tts-1-hd'.
+            
+        Returns:
+            str: Ruta al archivo de audio generado, o None si hubo un error.
         """
         try:
             print(f"[TTS] Generando audio para texto de {len(texto)} caracteres, usando voz: {voice}")
@@ -53,11 +56,32 @@ class OpenAITTS:
             # Guardar el audio en un archivo
             response.stream_to_file(output_file)
             
-            # Reproducir el audio
-            self.reproducir_audio(output_file)
+            # Devolver el nombre del archivo generado
+            return output_file
             
         except Exception as e:
             print(f"[OpenAITTS] Error al generar audio: {e}")
+            return None
+
+    def texto_a_voz_streaming(self, texto, output_file="output.mp3", voice="nova", model="tts-1"):
+        """
+        Convierte texto a voz usando la API de OpenAI y guarda el resultado en un archivo.
+        Luego reproduce el archivo usando el método reproducir_audio.
+        
+        Args:
+            texto (str): El texto a convertir a voz.
+            output_file (str): Nombre del archivo de salida.
+            voice (str): La voz a utilizar. Opciones: 'alloy', 'echo', 'fable', 'onyx', 'nova', 'shimmer'.
+            model (str): El modelo a utilizar. Opciones: 'tts-1', 'tts-1-hd'.
+        """
+        try:
+            audio_file = self.generar_audio(texto, output_file, voice, model)
+            if audio_file:
+                # Reproducir el audio
+                self.reproducir_audio(audio_file)
+            
+        except Exception as e:
+            print(f"[OpenAITTS] Error al generar o reproducir audio: {e}")
 
     def reproducir_audio(self, audio_file):
         """
