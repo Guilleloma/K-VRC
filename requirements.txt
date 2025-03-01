@@ -1,14 +1,26 @@
-# Versión mínima requerida de openai para usar la nueva interfaz
+# K-VRC Project Dependencies
+
+# HTTP requests
+requests>=2.28.0
+websockets>=10.0.0
+
+# Image manipulation
+Pillow<10.0.0
+
+# Hardware interfaces
+Adafruit-SSD1306>=1.6.2
+RPi.GPIO>=0.7.0,<0.7.1
+
+# AI and TTS
 openai>=1.0.0
+python-dotenv>=1.0.0
 
-# Se requiere para la captura de audio en tiempo real
-pyaudio==0.2.11
-
-# Usado en el procesamiento numérico, por ejemplo en el STT
-numpy==1.23.5
-
-# OpenCV para la captura y procesamiento de imágenes en el módulo vision
-opencv-python>=4.7.0.72
-
-# pydub para la manipulación y reproducción de audio en el TTS
+# Audio processing
 pydub>=0.25.1
+numpy<1.22.0
+
+# Note: For Raspberry Pi, install system packages:
+# sudo apt-get install -y libcamera-apps
+# sudo apt-get install -y mpg123 alsa-utils
+
+# Note: More dependencies will be added as needed

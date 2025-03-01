@@ -51,11 +51,26 @@ class RealTimeAudioCapture:
         Guarda el WAV en 'output_path' y retorna la ruta.
         """
         p = pyaudio.PyAudio()
+        
+        # Buscamos específicamente el dispositivo WM8960
+        device_index = None
+        for i in range(p.get_device_count()):
+            dev_info = p.get_device_info_by_index(i)
+            if "wm8960" in dev_info.get("name", "").lower():
+                device_index = i
+                break
+        
+        if device_index is None:
+            print("⚠️ No se encontró el dispositivo WM8960, usando dispositivo por defecto")
+        else:
+            print(f"✅ Usando dispositivo WM8960 (índice: {device_index})")
+
         stream = p.open(format=pyaudio.paInt16,
-                        channels=self.channels,
-                        rate=self.rate,
-                        input=True,
-                        frames_per_buffer=self.chunk)
+                       channels=self.channels,
+                       rate=self.rate,
+                       input=True,
+                       input_device_index=device_index,
+                       frames_per_buffer=self.chunk)
 
         print("Comenzando a grabar. Habla por el micrófono...")
 
@@ -64,23 +79,28 @@ class RealTimeAudioCapture:
         recording_active = True
 
         while recording_active:
-            data = stream.read(self.chunk, exception_on_overflow=False)
-            frames.append(data)
+            try:
+                data = stream.read(self.chunk, exception_on_overflow=False)
+                frames.append(data)
 
-            rms_val = self._rms(data)
-            # Debug/log para ver qué ocurre
-            print(f"RMS value: {rms_val} | silent count: {silent_chunks_count}")
+                rms_val = self._rms(data)
+                # Debug/log para ver qué ocurre
+                print(f"RMS value: {rms_val} | silent count: {silent_chunks_count}")
 
-            if rms_val < self.silence_threshold:
-                # Incrementamos el conteo de chunks silenciosos
-                silent_chunks_count += 1
-            else:
-                # Si hay voz, reseteamos a 0
-                silent_chunks_count = 0
+                if rms_val < self.silence_threshold:
+                    # Incrementamos el conteo de chunks silenciosos
+                    silent_chunks_count += 1
+                else:
+                    # Si hay voz, reseteamos a 0
+                    silent_chunks_count = 0
 
-            # Si llegamos a la cantidad de chunks que equivalen a 'silence_duration', paramos
-            if silent_chunks_count >= self.silence_chunks:
-                recording_active = False
+                # Si llegamos a la cantidad de chunks que equivalen a 'silence_duration', paramos
+                if silent_chunks_count >= self.silence_chunks:
+                    recording_active = False
+
+            except IOError as e:
+                print(f"⚠️ Error de IO: {str(e)}")
+                continue
 
         print("Silencio detectado. Finalizando grabación...")
 

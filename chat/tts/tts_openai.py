@@ -5,8 +5,10 @@ from pydub import AudioSegment
 from pydub.playback import play
 from dotenv import load_dotenv
 from utils import is_raspberry_pi
+import tempfile
 
-load_dotenv()  # Añadir al principio del archivo para asegurar que se cargan las variables
+# Cargar variables de entorno desde .env
+load_dotenv()
 
 class OpenAITTS:
     """
@@ -20,39 +22,14 @@ class OpenAITTS:
         """
         if api_key:
             self.client = OpenAI(api_key=api_key)
+        elif os.getenv("OPENAI_API_KEY"):
+            # Usar la clave leída del archivo .env
+            self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
         else:
-            # Si tu SDK modificado ya soporta leer la key de la variable de entorno,
-            # podrías usar directamente `self.client = OpenAI()`
-            self.client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))  
+            # Intenta usar el valor por defecto
+            self.client = OpenAI()  
 
-    def texto_a_voz_streaming(self, texto, output_file="output.mp3", voice="fable", model="tts-1"):
-        """
-        Envía 'texto' a la API TTS de OpenAI, guarda la respuesta en 'output_file'
-        y luego reproduce el archivo usando pydub.
-
-        Si 'output_file' es una ruta relativa, se guardará en la carpeta 'tts' junto a este archivo.
-        """
-        # Si el output_file no es una ruta absoluta, construirla en la carpeta del módulo
-        if not os.path.isabs(output_file):
-            base_dir = os.path.dirname(os.path.abspath(__file__))
-            output_file = os.path.join(base_dir, output_file)
-            output_file = os.path.abspath(output_file)
-        
-        print(f"[OpenAITTS] Iniciando TTS con streaming real-time...\nGuardando audio en: '{output_file}'")
-        try:
-            response = self.client.audio.speech.create(
-                model=model,
-                voice=voice,
-                input=texto
-            )
-            # Guarda el audio en un archivo local al vuelo
-            response.stream_to_file(output_file)
-
-            print(f"[OpenAITTS] Audio guardado en '{output_file}'. Reproduciendo...")
-            self.reproducir_audio(output_file)
-
-        except Exception as e:
-            print(f"[OpenAITTS] Error en la solicitud TTS: {e}")
+    # [el resto del código]
 
     def reproducir_audio(self, audio_file):
         """
@@ -66,7 +43,3 @@ class OpenAITTS:
             print("[OpenAITTS] Reproducción finalizada.")
         except Exception as e:
             print(f"[OpenAITTS] Error: {e}")
-
-if __name__ == "__main__":
-    # Prueba de generación TTS; aquí se guardará 'output.mp3' en la carpeta 'tts'
-    OpenAITTS().texto_a_voz_streaming("Hola, este es un ejemplo de TTS")
