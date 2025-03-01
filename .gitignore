@@ -1,12 +1,23 @@
-# Archivos de Python
+# Archivos de Python compilados
 __pycache__/
 *.py[cod]
 *.class
 
-# Archivos temporales
+# Archivos temporales del sistema
 .DS_Store
-*.wav
-*.mp3
+.AppleDouble
+.LSOverride
+*.swp
+*~
+
+# Archivos temporales del proyecto
+chat/stt/temp_audio.wav
+chat/tts/output.mp3
 chat/chat_memory.json
 
-# Archivos de caché
+# Archivos de entorno
+.env
+.venv
+env/
+venv/
+ENV/
