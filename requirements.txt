@@ -13,12 +13,14 @@ RPi.GPIO>=0.7.0,<0.7.1
 
 # AI and TTS
 openai>=1.0.0
+python-dotenv>=1.0.0
 
 # Audio processing
 pydub>=0.25.1
 numpy<1.22.0
 
-# Note: For Raspberry Pi, install system package:
+# Note: For Raspberry Pi, install system packages:
 # sudo apt-get install -y libcamera-apps
+# sudo apt-get install -y mpg123 alsa-utils
 
 # Note: More dependencies will be added as needed
