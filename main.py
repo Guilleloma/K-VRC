@@ -9,7 +9,10 @@ from led.led_controller import LEDController
 from vision.camera import capture_camera_image, analyze_image
 from audio.audio_controller import AudioPlayer
 from chat.stt.stt_whisper_http import transcribe_file
+from dotenv import load_dotenv
 
+# Cargar variables de entorno del archivo .env
+load_dotenv()
 
 # Ruta corregida para la memoria
 CHAT_MEMORY_DIR = "chat"
