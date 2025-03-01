@@ -2,8 +2,23 @@
 
 # HTTP requests
 requests>=2.28.0
+websockets>=10.0.0
 
 # Image manipulation
 Pillow<10.0.0
+
+# Hardware interfaces
+Adafruit-SSD1306>=1.6.2
+RPi.GPIO>=0.7.0,<0.7.1
+
+# AI and TTS
+openai>=1.0.0
+
+# Audio processing
+pydub>=0.25.1
+numpy<1.22.0
+
+# Note: For Raspberry Pi, install system package:
+# sudo apt-get install -y libcamera-apps
 
 # Note: More dependencies will be added as needed
