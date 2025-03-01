@@ -49,7 +49,7 @@ def capture_camera_image(output_path=None):
         cap = create_video_capture()
         if not cap.isOpened():
             print("Error: Could not open camera")
-            return None
+        return None
 
         # Reducir la resolución para disminuir la carga de memoria
         cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)

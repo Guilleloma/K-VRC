@@ -1,6 +1,5 @@
 import platform
 import os
-import cv2
 
 def is_raspberry_pi():
     """
@@ -29,6 +28,8 @@ def create_video_capture(device_index=0):
     :param device_index: Índice del dispositivo de captura (por defecto 0).
     :return: Instancia de cv2.VideoCapture.
     """
+    import cv2  # Import moved here to avoid requiring it when not needed
+    
     if platform.system() == "Darwin":
         # En macOS, usamos el backend por defecto
         return cv2.VideoCapture(device_index)
