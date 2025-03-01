@@ -1,0 +1,23 @@
+# Archivos compilados de Python
+__pycache__/
+*.py[cod]
+*.class
+
+# Archivos temporales
+.DS_Store
+._*
+=*
+*.swp
+*~
+
+# Archivos específicos del proyecto
+chat/chat_memory.json
+chat/stt/temp_audio.wav
+chat/tts/output.mp3
+test_output.mp3
+
+# Entornos virtuales
+.env
+.venv
+venv/
+ENV/

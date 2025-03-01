@@ -4,6 +4,7 @@ import os
 from pydub import AudioSegment
 from pydub.playback import play
 from dotenv import load_dotenv
+from utils import is_raspberry_pi
 import tempfile
 
 # Cargar variables de entorno desde .env
@@ -25,97 +26,48 @@ class OpenAITTS:
             # Usar la clave leída del archivo .env
             self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
         else:
-            # Intenta usar el valor por defecto (que debería estar en la variable de entorno)
+            # Intenta usar el valor por defecto
             self.client = OpenAI()  
 
-    def texto_a_voz_streaming(self, texto, output_file="output.mp3", voice="fable", model="tts-1"):
+    def texto_a_voz_streaming(self, texto, output_file="output.mp3", voice="nova", model="tts-1"):
         """
-        Envía 'texto' a la API TTS de OpenAI, guarda la respuesta en 'output_file'
-        y luego reproduce el archivo usando pydub.
-
-        Si 'output_file' es una ruta relativa, se guardará en la carpeta 'tts' junto a este archivo.
-        """
-        # Si el output_file no es una ruta absoluta, construirla en la carpeta del módulo
-        if not os.path.isabs(output_file):
-            base_dir = os.path.dirname(os.path.abspath(__file__))
-            output_file = os.path.join(base_dir, output_file)
-            output_file = os.path.abspath(output_file)
+        Convierte texto a voz usando la API de OpenAI y guarda el resultado en un archivo.
+        Luego reproduce el archivo usando el método reproducir_audio.
         
-        print(f"[OpenAITTS] Iniciando TTS con streaming real-time...\nGuardando audio en: '{output_file}'")
+        Args:
+            texto (str): El texto a convertir a voz.
+            output_file (str): Nombre del archivo de salida.
+            voice (str): La voz a utilizar. Opciones: 'alloy', 'echo', 'fable', 'onyx', 'nova', 'shimmer'.
+            model (str): El modelo a utilizar. Opciones: 'tts-1', 'tts-1-hd'.
+        """
         try:
+            print(f"[TTS] Generando audio para texto de {len(texto)} caracteres, usando voz: {voice}")
+            
+            # Generar el audio con la API de OpenAI
             response = self.client.audio.speech.create(
                 model=model,
                 voice=voice,
                 input=texto
             )
-            # Guarda el audio en un archivo local al vuelo
+            
+            # Guardar el audio en un archivo
             response.stream_to_file(output_file)
-
-            print(f"[OpenAITTS] Audio guardado en '{output_file}'. Reproduciendo...")
+            
+            # Reproducir el audio
             self.reproducir_audio(output_file)
-
+            
         except Exception as e:
-            print(f"[OpenAITTS] Error en la solicitud TTS: {e}")
+            print(f"[OpenAITTS] Error al generar audio: {e}")
 
     def reproducir_audio(self, audio_file):
         """
-        Reproduce un archivo MP3 (o ajusta si es WAV, etc.).
-        En Raspberry Pi, primero convierte el audio a un formato compatible.
+        Reproduce un archivo MP3 usando únicamente mpg123, sin intentar usar pydub/PyAudio.
         """
         try:
-            # Intentamos cargar el audio
-            sound = AudioSegment.from_file(audio_file, format="mp3")
-            
-            # Verificamos si estamos en Raspberry Pi
-            import sys
-            sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
-            from utils import is_raspberry_pi
-            
-            if is_raspberry_pi():
-                # En Raspberry Pi, convertimos el audio a WAV de 44.1kHz (frecuencia estándar soportada)
-                print("[OpenAITTS] Detectada Raspberry Pi, convirtiendo audio a formato compatible...")
-                
-                # Convertir a una frecuencia de muestreo estándar (44.1kHz)
-                sound = sound.set_frame_rate(44100)
-                
-                # Crear un archivo temporal para el WAV convertido
-                temp_wav = tempfile.NamedTemporaryFile(suffix='.wav', delete=False)
-                wav_path = temp_wav.name
-                temp_wav.close()
-                
-                # Exportar a WAV
-                sound.export(wav_path, format="wav")
-                
-                # Reproducir usando un comando del sistema en lugar de PyDub
-                import subprocess
-                print(f"[OpenAITTS] Reproduciendo audio convertido con aplay...")
-                result = subprocess.run(["aplay", wav_path], capture_output=True)
-                
-                # Eliminar el archivo temporal
-                os.unlink(wav_path)
-                
-                if result.returncode != 0:
-                    print(f"[OpenAITTS] Error al reproducir con aplay: {result.stderr.decode()}")
-                    # Como fallback, intentamos reproducir con mpg123
-                    print("[OpenAITTS] Intentando reproducir con mpg123...")
-                    subprocess.run(["mpg123", audio_file], capture_output=True)
-            else:
-                # En otros sistemas usamos pydub normalmente
-                play(sound)
-                
-            print("[OpenAITTS] Reproducción de audio finalizada.")
-            
+            # Usamos directamente mpg123 para reproducir el MP3 en modo silencioso
+            import subprocess
+            print("[TTS] Reproduciendo audio...")
+            subprocess.run(["mpg123", "-q", audio_file], check=False)
+            print("[TTS] Reproducción finalizada.")
         except Exception as e:
-            print(f"[OpenAITTS] Error al reproducir '{audio_file}': {e}")
-            
-            # Si falla la reproducción, intentamos usar mpg123 como último recurso
-            try:
-                import subprocess
-                print("[OpenAITTS] Intentando reproducir con mpg123 como último recurso...")
-                subprocess.run(["mpg123", audio_file], capture_output=True)
-            except Exception as fallback_error:
-                print(f"[OpenAITTS] Falló también el fallback mpg123: {fallback_error}")
-
-if __name__ == "__main__":
-    # Prueba de generación TTS; aquí se guardará 'output.mp3' en la carpeta 'tts'
-    OpenAITTS().texto_a_voz_streaming("Hola, este es un ejemplo de TTS")
+            print(f"[TTS] Error: {e}")

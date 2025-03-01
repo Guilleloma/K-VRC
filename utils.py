@@ -1,6 +1,13 @@
 import platform
 import os
 
+# Modificar la importación de cv2 para que sea condicional
+try:
+    import cv2
+    has_opencv = True
+except ImportError:
+    has_opencv = False
+
 def is_raspberry_pi():
     """
     Determina si el código se está ejecutando en una Raspberry Pi.
@@ -15,7 +22,8 @@ def is_raspberry_pi():
             model = model_file.read().lower()
             return 'raspberry pi' in model
     except Exception:
-        return False
+        # Fallback al método anterior si no podemos leer el modelo
+        return platform.system() == 'Linux' and platform.machine().startswith(('arm', 'aarch'))
 
 def create_video_capture(device_index=0):
     """

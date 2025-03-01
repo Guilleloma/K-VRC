@@ -12,4 +12,9 @@ TEMP_AUDIO_PATH = "temp_audio.wav"  # Ruta por defecto para guardar el audio tem
 AUDIO_FORMAT = 'int16'     # Formato de audio
 DEVICE_INDEX = None        # None usa el dispositivo por defecto, cambiar si es necesario
 
+# Configuración de hardware - GPIO
+LED_PIN = 27               # Pin GPIO para el LED principal
+# BUTTON_PIN = 17          # Pin GPIO para el botón (descomentar si se implementa)
+# SERVO_PIN = 18           # Pin GPIO para servo de movimiento (descomentar si se implementa)
+
 # Agrega otras variables globales:
