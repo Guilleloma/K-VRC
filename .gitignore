@@ -5,19 +5,15 @@ __pycache__/
 
 # Archivos temporales del sistema
 .DS_Store
-.AppleDouble
-.LSOverride
-*.swp
-*~
+._*
+=*
 
 # Archivos temporales del proyecto
+chat/chat_memory.json
 chat/stt/temp_audio.wav
 chat/tts/output.mp3
-chat/chat_memory.json
 
 # Archivos de entorno
 .env
 .venv
-env/
 venv/
-ENV/
