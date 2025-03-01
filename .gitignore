@@ -1,0 +1,12 @@
+# Archivos de Python
+__pycache__/
+*.py[cod]
+*.class
+
+# Archivos temporales
+.DS_Store
+*.wav
+*.mp3
+chat/chat_memory.json
+
+# Archivos de caché
