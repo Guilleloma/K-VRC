@@ -3,6 +3,10 @@ from openai import OpenAI
 import os
 from pydub import AudioSegment
 from pydub.playback import play
+from dotenv import load_dotenv
+
+# Cargar variables de entorno desde .env
+load_dotenv()
 
 class OpenAITTS:
     """
@@ -16,9 +20,11 @@ class OpenAITTS:
         """
         if api_key:
             self.client = OpenAI(api_key=api_key)
+        elif os.getenv("OPENAI_API_KEY"):
+            # Usar la clave leída del archivo .env
+            self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
         else:
-            # Si tu SDK modificado ya soporta leer la key de la variable de entorno,
-            # podrías usar directamente `self.client = OpenAI()`
+            # Intenta usar el valor por defecto (que debería estar en la variable de entorno)
             self.client = OpenAI()  
 
     def texto_a_voz_streaming(self, texto, output_file="output.mp3", voice="fable", model="tts-1"):
