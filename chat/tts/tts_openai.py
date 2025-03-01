@@ -3,6 +3,10 @@ from openai import OpenAI
 import os
 from pydub import AudioSegment
 from pydub.playback import play
+from dotenv import load_dotenv
+from utils import is_raspberry_pi
+
+load_dotenv()  # Añadir al principio del archivo para asegurar que se cargan las variables
 
 class OpenAITTS:
     """
@@ -19,7 +23,7 @@ class OpenAITTS:
         else:
             # Si tu SDK modificado ya soporta leer la key de la variable de entorno,
             # podrías usar directamente `self.client = OpenAI()`
-            self.client = OpenAI()  
+            self.client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))  
 
     def texto_a_voz_streaming(self, texto, output_file="output.mp3", voice="fable", model="tts-1"):
         """
@@ -52,14 +56,16 @@ class OpenAITTS:
 
     def reproducir_audio(self, audio_file):
         """
-        Reproduce un archivo MP3 (o ajusta si es WAV, etc.).
+        Reproduce un archivo MP3 usando únicamente mpg123, sin intentar usar pydub/PyAudio.
         """
         try:
-            sound = AudioSegment.from_file(audio_file, format="mp3")
-            play(sound)
-            print("[OpenAITTS] Reproducción de audio finalizada.")
+            # Usamos directamente mpg123 para reproducir el MP3 - sin conversiones ni alternativas
+            import subprocess
+            print("[OpenAITTS] Reproduciendo directamente con mpg123...")
+            subprocess.run(["mpg123", audio_file], check=False)
+            print("[OpenAITTS] Reproducción finalizada.")
         except Exception as e:
-            print(f"[OpenAITTS] Error al reproducir '{audio_file}': {e}")
+            print(f"[OpenAITTS] Error: {e}")
 
 if __name__ == "__main__":
     # Prueba de generación TTS; aquí se guardará 'output.mp3' en la carpeta 'tts'
