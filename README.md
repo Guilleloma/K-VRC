@@ -11,8 +11,9 @@
 6. [Installation & Setup](#installation--setup)  
 7. [Usage](#usage)  
 8. [Additional Notes](#additional-notes)  
-9. [License](#license)  
-10. [Acknowledgments](#acknowledgments)
+9. [Development Process](#development-process)  
+10. [License](#license)  
+11. [Acknowledgments](#acknowledgments)
 
 ---
 
@@ -22,7 +23,7 @@ This project is a **life-like replica** of **K-VRC**, a character from the Netfl
 
 **Key highlights:**
 
-- 3D-printed shell designed to replicate K-VRC’s appearance.  
+- 3D-printed shell designed to replicate K-VRC's appearance.  
 - **Servo** control for head or body movement.  
 - **OLED SSD1360** display (I2C) for facial expressions or status indicators.  
 - **Audio HAT WM8960** for audio output (and possibly input).  
@@ -36,7 +37,7 @@ You can visit the repository here:
 
 ## Features
 
-- **Servo SG90 control**: Provides simple, smooth animation for K-VRC’s head or body movement.  
+- **Servo SG90 control**: Provides simple, smooth animation for K-VRC's head or body movement.  
 - **OLED I2C (SSD1360)** support: Displays text, images, or animations that add expressive features.  
 - **Audio playback and recording** via the WM8960 Audio HAT.  
 - **Camera integration (OV564)**: Potential for image capture, video streaming, or computer vision tasks.  
@@ -52,7 +53,7 @@ To replicate or build this project, you will need the following hardware:
 2. **MicroSD card** (16GB or more recommended)  
 3. **Servo motor** (SG90 or compatible 5V servo)  
 4. **OLED SSD1360** display (I2C interface)  
-5. **Audio HAT WM8960** (check that it’s designed for Raspberry Pi)  
+5. **Audio HAT WM8960** (check that it's designed for Raspberry Pi)  
 6. **Camera module** (OV564 or equivalent that works with Pi Zero)  
 7. **Wires, resistors**, and other electronics components (headers, connectors, etc.)  
 8. **USB power supply** (5V, 2A minimum recommended)
@@ -66,7 +67,7 @@ To replicate or build this project, you will need the following hardware:
 ## 3D Printing
 
 1. **Model Files**  
-   The 3D model files (STL or similar) for K-VRC’s body will be located in the `3D_models` folder (or shared in the repository).  
+   The 3D model files (STL or similar) for K-VRC's body will be located in the `3D_models` folder (or shared in the repository).  
 
 2. **Recommended Settings**  
    - Material: PLA or ABS  
@@ -95,7 +96,7 @@ Below is a non-exhaustive list of Python libraries commonly used in this project
 - `pyttsx3` or other TTS libraries if you wish to add text-to-speech  
 - `opencv-python` (OpenCV) if camera-based image processing is required  
 - `numpy` for any advanced image/audio or data manipulation  
-- `pyaudio` or custom libraries for WM8960 support (Ensure you configure the HAT’s drivers on Raspberry Pi OS)
+- `pyaudio` or custom libraries for WM8960 support (Ensure you configure the HAT's drivers on Raspberry Pi OS)
 
 ---
 
@@ -105,28 +106,38 @@ Below is a non-exhaustive list of Python libraries commonly used in this project
    ```bash 
    git clone https://github.com/Guilleloma/K-VRC.git
    cd K-VRC
+   ```
+
 2. **Install Python dependencies**:
-```bash
+   ```bash
    pip3 install -r requirements.txt
-```
-(Adjust the command if you use a virtual environment or a different Python version.)
+   ```
+   (Adjust the command if you use a virtual environment or a different Python version.)
 
-3.**Enable I2C, Camera, and Audio on your Raspberry Pi**:
-```bash
-Run sudo raspi-config
-```
-Go to Interface Options and enable I2C and Camera.
+3. **Activate the project's virtual environment**:
+   ```bash
+   source /home/pi/venvs/k-vrc-env/bin/activate
+   ```
+   
+   This project uses a dedicated virtual environment located at `/home/pi/venvs/k-vrc-env/`. When the environment is activated, your terminal prompt will show `(k-vrc-env)` indicating that you're using the project's isolated Python environment.
 
-For the WM8960 Audio HAT, follow the vendor instructions (often involves installing kernel modules or editing /boot/config.txt).
+4. **Enable I2C, Camera, and Audio on your Raspberry Pi**:
+   ```bash
+   sudo raspi-config
+   ```
+   Go to Interface Options and enable I2C and Camera.
+
+   For the WM8960 Audio HAT, follow the vendor instructions (often involves installing kernel modules or editing /boot/config.txt).
+
 Wire up the Hardware:
 
 Connect the servo to a 5V pin, GND, and a GPIO pin on the Pi (e.g., GPIO18 for PWM).
-Connect the OLED’s SDA and SCL to the Pi’s SDA/SCL I2C pins, and power lines to 3.3V/GND.
-Attach the Audio HAT to the Pi Zero’s GPIO header.
+Connect the OLED's SDA and SCL to the Pi's SDA/SCL I2C pins, and power lines to 3.3V/GND.
+Attach the Audio HAT to the Pi Zero's GPIO header.
 Ensure the camera connector is attached properly (CSI interface).
 Test Each Component:
 Servo: Run a simple PWM test script to move the servo.
-OLED: Print “Hello World” to the display.
+OLED: Print "Hello World" to the display.
 Audio: Play a sample WAV/MP3 and confirm audio output.
 Camera: Use raspistill or similar commands to capture a test image.
 
@@ -156,6 +167,28 @@ The general workflow of the system is as follows:
 - Adjust the audio capture parameters and other behaviors by modifying `config.py` as needed.
 - Check out the example directories in `audio/audio_examples`, `servo_examples`, `face/oled_examples`, etc., for additional functionality and usage examples.
 - Further details on internal workings (such as using the Whisper API or TTS control) can be found in the respective modules under `chat/stt`, `chat/tts`, and other directories.
+
+## Development Process
+
+This project follows a structured branching strategy to ensure code quality and stability:
+
+- **trunk**: The main stable branch containing production-ready code.
+- **development**: The integration branch where features are combined and tested.
+- **feature branches**: Individual branches created from development for specific modifications.
+
+### Workflow
+
+1. All development work begins by creating a feature branch from the **development** branch.
+2. Once a feature is complete, it's merged back into the **development** branch.
+3. After thorough testing in the development branch, changes are merged into the **trunk** branch.
+
+### Merge Guidelines
+
+- We do not use fast-forward merges to maintain clear branch history.
+- All merges require commit messages to document the purpose of the merge.
+- This approach ensures that the repository history can be clearly visualized in tools like Gitgraph.
+
+Contributors should follow this workflow to maintain project stability and facilitate collaborative development.
 
 ## License
 This project is distributed under the MIT License. For more details, see the LICENSE file in the repository.
