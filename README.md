@@ -1,6 +1,6 @@
 # K-VRC Raspberry Pi Project
 
-https://studio.youtube.com/video/sy0K2py56xU/edit
+[![K-VRC Demo](https://img.youtube.com/vi/sy0K2py56xU/0.jpg)](https://youtu.be/sy0K2py56xU)
 
 ## Table of Contents
 1. [Overview](#overview)  
